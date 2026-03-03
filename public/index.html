@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Supermarket POS</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="app-header">
+    <h1>Supermarket POS</h1>
+    <p>Fast, easy, button-first billing for cashiers.</p>
+  </header>
+
+  <main class="layout">
+    <section class="panel">
+      <div class="tabs" role="tablist" aria-label="POS sections">
+        <button class="tab-btn active" data-tab="pos">POS Billing</button>
+        <button class="tab-btn" data-tab="inventory">Inventory Admin</button>
+      </div>
+
+      <div class="tab-content active" id="tab-pos">
+        <div class="toolbar">
+          <input id="searchInput" placeholder="Search items by name or barcode" />
+          <button id="clearCartBtn" class="secondary">Clear Cart</button>
+        </div>
+
+        <div id="categoryFilters" class="chip-row"></div>
+        <div id="itemGrid" class="item-grid"></div>
+      </div>
+
+      <div class="tab-content" id="tab-inventory">
+        <h2>Inventory Uploads</h2>
+
+        <div class="admin-grid">
+          <form id="manualForm" class="card">
+            <h3>Manual Upload</h3>
+            <input name="name" placeholder="Item name" required />
+            <input name="price" type="number" step="0.01" placeholder="Price" required />
+            <input name="category" placeholder="Category" />
+            <input name="barcode" placeholder="Barcode / SKU" />
+            <button type="submit">Add Item</button>
+          </form>
+
+          <form id="csvForm" class="card">
+            <h3>CSV Upload</h3>
+            <p>CSV columns: name, price, category, barcode</p>
+            <input name="csvFile" type="file" accept=".csv" required />
+            <button type="submit">Upload CSV</button>
+          </form>
+
+          <form id="sheetForm" class="card">
+            <h3>Google Sheets Sync</h3>
+            <p>Paste published CSV URL from Google Sheets.</p>
+            <input name="sheetUrl" type="url" placeholder="https://docs.google.com/.../pub?output=csv" required />
+            <button type="submit">Sync Sheet</button>
+          </form>
+        </div>
+
+        <p id="adminMessage" class="message"></p>
+      </div>
+    </section>
+
+    <aside class="cart panel">
+      <h2>Current Bill</h2>
+      <div id="cartList" class="cart-list"></div>
+      <div class="total-row">
+        <span>Total</span>
+        <strong id="cartTotal">$0.00</strong>
+      </div>
+      <button id="checkoutBtn" class="checkout">Checkout</button>
+      <p id="checkoutMessage" class="message"></p>
+    </aside>
+  </main>
+
+  <script src="app.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+[
+  {"id":"itm-apple","name":"Apple","price":0.8,"category":"Produce","barcode":"10001"},
+  {"id":"itm-milk","name":"Milk 1L","price":2.4,"category":"Dairy","barcode":"10002"},
+  {"id":"itm-bread","name":"Whole Wheat Bread","price":1.9,"category":"Bakery","barcode":"10003"},
+  {"id":"itm-rice","name":"Rice 5kg","price":12.5,"category":"Pantry","barcode":"10004"}
+]
