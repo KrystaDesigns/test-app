@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Local AI Notetaker</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">Local-first assistant</p>
+        <h1>Fireflies-style AI Notetaker</h1>
+      </div>
+      <span class="badge">Runs 100% locally</span>
+    </header>
+
+    <main class="layout">
+      <section class="card">
+        <h2>Join Live Meeting</h2>
+        <p class="muted">
+          Paste a meeting link and open it instantly. Supported: Zoom, Google Meet,
+          and Zoho Meeting.
+        </p>
+
+        <form id="meeting-form" class="stack">
+          <label>
+            Meeting link
+            <input
+              id="meeting-link"
+              type="url"
+              placeholder="https://zoom.us/j/..., https://meet.google.com/..., https://meeting.zoho.com/..."
+              required
+            />
+          </label>
+
+          <label>
+            Platform
+            <select id="platform">
+              <option value="auto">Auto detect</option>
+              <option value="zoom">Zoom</option>
+              <option value="meet">Google Meet</option>
+              <option value="zoho">Zoho Meeting</option>
+            </select>
+          </label>
+
+          <button type="submit">Join Meeting</button>
+        </form>
+
+        <p id="join-status" class="status" aria-live="polite"></p>
+      </section>
+
+      <section class="card">
+        <h2>Live Recorder</h2>
+        <p class="muted">
+          Record screen + tab audio + microphone while you are in a meeting. Download
+          the recording once complete.
+        </p>
+
+        <div class="controls">
+          <button id="start-rec">Start Recording</button>
+          <button id="pause-rec" disabled>Pause</button>
+          <button id="resume-rec" disabled>Resume</button>
+          <button id="stop-rec" disabled>Stop</button>
+        </div>
+
+        <div class="recorder-meta">
+          <span id="rec-state" class="dot">Idle</span>
+          <span id="rec-time">00:00</span>
+        </div>
+
+        <a id="download-link" class="download hidden" download="meeting-recording.webm">
+          Download Recording
+        </a>
+      </section>
+
+      <section class="card wide">
+        <h2>AI Notes Workspace</h2>
+        <p class="muted">
+          Paste transcript or live notes, then generate local summaries and action
+          items.
+        </p>
+
+        <label>
+          Transcript / notes
+          <textarea
+            id="transcript"
+            rows="10"
+            placeholder="Example: Team discussed Q3 launch, owners, due dates, blockers..."
+          ></textarea>
+        </label>
+
+        <div class="controls">
+          <button id="generate">Generate Notes</button>
+          <button id="clear">Clear</button>
+        </div>
+
+        <div class="output-grid">
+          <article>
+            <h3>Summary</h3>
+            <ul id="summary-list"></ul>
+          </article>
+          <article>
+            <h3>Action Items</h3>
+            <ul id="action-list"></ul>
+          </article>
+          <article>
+            <h3>Keywords</h3>
+            <ul id="keyword-list"></ul>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>
