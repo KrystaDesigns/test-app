@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Meeting Audio Tool</title>
+    <link rel="stylesheet" href="/src/styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="hero-card">
+        <div>
+          <p class="eyebrow">Meeting Audio Tool</p>
+          <h1>Upload a voice recording and get meeting minutes automatically.</h1>
+          <p class="hero-copy">Transcribe calls, create a concise summary, capture action points, and share the result by email, WhatsApp, or PDF download from one simple workspace.</p>
+        </div>
+        <div class="status-pill" id="mode-pill">Ready</div>
+      </section>
+
+      <section class="panel upload-panel">
+        <form id="upload-form">
+          <label>
+            Meeting title
+            <input id="title" placeholder="Weekly client check-in" />
+          </label>
+          <label class="drop-zone">
+            <span>Audio recording</span>
+            <strong id="file-name">Choose MP3, WAV, M4A, WebM, or MP4 audio</strong>
+            <input id="audio" type="file" accept="audio/*,.mp3,.wav,.m4a,.mp4,.webm,.mpeg,.mpga" />
+          </label>
+          <button id="submit-button" disabled type="submit">Transcribe and summarize</button>
+          <p class="status-text" id="status-text">Upload a call recording to generate notes.</p>
+          <p class="error-text" id="error-text"></p>
+        </form>
+      </section>
+
+      <section class="results-grid hidden" id="results"></section>
+    </main>
+    <script type="module" src="/src/app.js"></script>
+  </body>
+</html>
