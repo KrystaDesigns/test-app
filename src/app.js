@@ -1,152 +1,77 @@
-const form = document.querySelector('#upload-form');
-const audioInput = document.querySelector('#audio');
-const titleInput = document.querySelector('#title');
-const submitButton = document.querySelector('#submit-button');
-const fileName = document.querySelector('#file-name');
-const statusText = document.querySelector('#status-text');
-const errorText = document.querySelector('#error-text');
-const results = document.querySelector('#results');
-const modePill = document.querySelector('#mode-pill');
+const experiences = [
+  ['Bollywood Jazz Nights', 'Brass, filmi standards and candlelit chai service.'],
+  ['Qawwali & Cocktails', 'Soulful live vocals paired with velvet mocktails and spiced pours.'],
+  ['Chai & Vinyl Sessions', 'Selectors, rare grooves and a slow-brew listening bar.'],
+  ['Listening Bar Nights', 'Low light, hi-fi sound and a menu designed around mood.'],
+  ['Karaoke Socials', 'Nostalgic singalongs with playful table-side chai rituals.'],
+  ['Acoustic Sessions', 'Unplugged artists, intimate seating and amber lounge glow.'],
+  ['Nostalgia Nights', 'Cassette-era visuals, old photos and communal storytelling.'],
+];
 
-let selectedFile = null;
-let currentMeeting = null;
+const chaiProfiles = {
+  'Midnight Masala': 'Strong black tea, ginger heat, low sweetness, oat milk and cinematic afterhours mood.',
+  'Velvet Cardamom': 'Medium strength, cardamom perfume, honeyed sweetness, whole milk and soulful lounge mood.',
+  'Afterhours Ginger': 'Bold brew, fresh ginger, jaggery sweetness, almond milk and energetic late-night mood.',
+};
 
-fetch('/api/health')
-  .then((response) => response.json())
-  .then((health) => {
-    modePill.textContent = health.aiMode === 'openai' ? 'AI enabled' : 'Demo mode';
-  })
-  .catch(() => {
-    modePill.textContent = 'Ready';
+const experienceProfiles = {
+  'Listening Bar': 'An intimate 75-guest listening bar with chai service, mocktails, vinyl selectors and amber lounge lighting.',
+  'Qawwali Lounge': 'A soulful seated night with live qawwali, low tables, spiced chai, cocktails and dramatic warm light.',
+  'Nostalgia Social': 'A playful private event with karaoke, cassette visuals, comfort snacks, chai flights and photo moments.',
+};
+
+const body = document.body;
+const nowPlaying = document.querySelector('#now-playing');
+const cassette = document.querySelector('#cassette');
+const experienceGrid = document.querySelector('#experience-grid');
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach((entry) => entry.isIntersecting && entry.target.classList.add('is-visible'));
+}, { threshold: 0.18 });
+
+document.querySelectorAll('.reveal, .section').forEach((element) => revealObserver.observe(element));
+
+document.querySelectorAll('[data-play]').forEach((button) => {
+  button.addEventListener('click', () => {
+    body.classList.add('is-playing');
+    cassette.classList.add('flip');
+    nowPlaying.textContent = 'Playing · Side B — Afterhours Masala';
   });
-
-audioInput.addEventListener('change', () => {
-  selectedFile = audioInput.files?.[0] || null;
-  fileName.textContent = selectedFile ? selectedFile.name : 'Choose MP3, WAV, M4A, WebM, or MP4 audio';
-  submitButton.disabled = !selectedFile;
 });
 
-form.addEventListener('submit', async (event) => {
-  event.preventDefault();
-  if (!selectedFile) return;
+document.querySelector('[data-stop]').addEventListener('click', () => {
+  body.classList.remove('is-playing');
+  nowPlaying.textContent = 'Paused · Side A loaded';
+});
 
-  setLoading(true, 'Uploading and transcribing your meeting audio...');
-  errorText.textContent = '';
+document.querySelector('[data-side]').addEventListener('click', () => {
+  cassette.classList.toggle('flip');
+  nowPlaying.textContent = cassette.classList.contains('flip') ? 'Loaded · Side B experiences' : 'Loaded · Side A story';
+});
 
-  try {
-    const audioBase64 = await fileToBase64(selectedFile);
-    const response = await fetch('/api/meetings', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        title: titleInput.value || selectedFile.name,
-        fileName: selectedFile.name,
-        mimeType: selectedFile.type || 'application/octet-stream',
-        audioBase64,
-      }),
+experienceGrid.innerHTML = experiences.map(([title, copy], index) => `
+  <article class="experience-card" style="--tilt:${index % 2 ? '2deg' : '-2deg'}">
+    <span>0${index + 1}</span><h3>${title}</h3><p>${copy}</p><button type="button">Open poster</button>
+  </article>
+`).join('');
+
+document.querySelectorAll('.experience-card button').forEach((button) => {
+  button.addEventListener('click', () => button.closest('.experience-card').classList.toggle('open'));
+});
+
+createBuilder('chai', chaiProfiles, '#chai-name', '#chai-output');
+createBuilder('experience', experienceProfiles, '#experience-name', '#experience-output');
+
+function createBuilder(type, profiles, titleSelector, outputSelector) {
+  const row = document.querySelector(`[data-builder="${type}"]`);
+  const title = document.querySelector(titleSelector);
+  const output = document.querySelector(outputSelector);
+  row.innerHTML = Object.keys(profiles).map((name, index) => `<button class="chip ${index === 0 ? 'active' : ''}" type="button">${name}</button>`).join('');
+  row.querySelectorAll('button').forEach((button) => {
+    button.addEventListener('click', () => {
+      row.querySelectorAll('button').forEach((chip) => chip.classList.remove('active'));
+      button.classList.add('active');
+      title.textContent = button.textContent;
+      output.textContent = profiles[button.textContent];
     });
-    const payload = await response.json();
-    if (!response.ok) throw new Error(payload.error || 'Failed to process meeting.');
-    currentMeeting = payload;
-    renderMeeting(payload);
-    statusText.textContent = 'Transcript, summary, action items, and sharing options are ready.';
-  } catch (error) {
-    errorText.textContent = error.message || 'Something went wrong.';
-    statusText.textContent = 'Upload failed. Please try again.';
-  } finally {
-    setLoading(false);
-  }
-});
-
-function setLoading(isLoading, message) {
-  submitButton.disabled = isLoading || !selectedFile;
-  submitButton.textContent = isLoading ? 'Generating transcript and summary…' : 'Transcribe and summarize';
-  if (message) statusText.textContent = message;
-}
-
-function renderMeeting(meeting) {
-  results.classList.remove('hidden');
-  results.innerHTML = `
-    <article class="panel result-card wide">
-      <h2>${escapeHtml(meeting.title)}</h2>
-      <p class="meta">Processed ${new Date(meeting.createdAt).toLocaleString()} from ${escapeHtml(meeting.fileName)}</p>
-      <h3>Call summary</h3>
-      <p>${escapeHtml(meeting.summary)}</p>
-    </article>
-    <article class="panel result-card">
-      <h3>Action points</h3>
-      <ul class="task-list">${meeting.actionItems.map(renderActionItem).join('')}</ul>
-    </article>
-    <article class="panel result-card">
-      <h3>Key discussion points</h3>
-      <ul>${meeting.keyPoints.map((point) => `<li>${escapeHtml(point)}</li>`).join('')}</ul>
-      <h3>Decisions</h3>
-      <ul>${(meeting.decisions.length ? meeting.decisions : ['No explicit decisions detected.']).map((decision) => `<li>${escapeHtml(decision)}</li>`).join('')}</ul>
-    </article>
-    <article class="panel result-card wide">
-      <h3>Share and export</h3>
-      <div class="share-row">
-        <input id="email-to" placeholder="recipient@example.com" />
-        <button type="button" data-share="email">Send as email</button>
-      </div>
-      <div class="share-row">
-        <input id="whatsapp-phone" placeholder="WhatsApp phone with country code" />
-        <button type="button" data-share="whatsapp">Send to WhatsApp</button>
-      </div>
-      <a class="download-button" href="/api/meetings/${meeting.id}/pdf">Download PDF</a>
-    </article>
-    <article class="panel result-card wide">
-      <h3>Transcript</h3>
-      <pre>${escapeHtml(meeting.transcript)}</pre>
-    </article>
-  `;
-
-  results.querySelector('[data-share="email"]').addEventListener('click', () => openShare('email'));
-  results.querySelector('[data-share="whatsapp"]').addEventListener('click', () => openShare('whatsapp'));
-}
-
-function renderActionItem(item) {
-  return `
-    <li>
-      <span>${escapeHtml(item.owner)}</span>
-      <strong>${escapeHtml(item.task)}</strong>
-      <small>Due: ${escapeHtml(item.dueDate)} · ${escapeHtml(item.status)}</small>
-    </li>
-  `;
-}
-
-async function openShare(kind) {
-  if (!currentMeeting) return;
-  const body = kind === 'email'
-    ? { to: document.querySelector('#email-to').value }
-    : { phone: document.querySelector('#whatsapp-phone').value };
-  const response = await fetch(`/api/meetings/${currentMeeting.id}/share/${kind}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
   });
-  const payload = await response.json();
-  if (!response.ok) {
-    errorText.textContent = payload.error || `Could not create ${kind} share link.`;
-    return;
-  }
-  window.open(payload.url, '_blank', 'noopener,noreferrer');
-}
-
-function fileToBase64(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(String(reader.result).split(',')[1] || '');
-    reader.onerror = () => reject(reader.error);
-    reader.readAsDataURL(file);
-  });
-}
-
-function escapeHtml(value) {
-  return String(value)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;');
 }

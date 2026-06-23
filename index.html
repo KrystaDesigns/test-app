@@ -3,38 +3,78 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Meeting Audio Tool</title>
+    <title>Chai Shai / Side B Interactive Prototype</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="/src/styles.css" />
   </head>
   <body>
-    <main class="app-shell">
-      <section class="hero-card">
-        <div>
-          <p class="eyebrow">Meeting Audio Tool</p>
-          <h1>Upload a voice recording and get meeting minutes automatically.</h1>
-          <p class="hero-copy">Transcribe calls, create a concise summary, capture action points, and share the result by email, WhatsApp, or PDF download from one simple workspace.</p>
+    <div class="grain"></div>
+    <header class="site-header">
+      <a class="brand" href="#home" aria-label="Chai Shai Side B home"><span>Chai Shai</span><em>Side B</em></a>
+      <nav aria-label="Primary navigation">
+        <a href="#story">Side A</a><a href="#experiences">Side B</a><a href="#events">Events</a><a href="#builders">Builders</a><a href="#inquiry">Inquiry</a>
+      </nav>
+    </header>
+
+    <main id="home">
+      <section class="hero section">
+        <div class="hero-copy reveal">
+          <p class="eyebrow">Travelling chai · music · memory</p>
+          <h1>Press play on the world of Chai Shai.</h1>
+          <p>A cinematic hospitality prototype built around warm chai, intimate music, nostalgic nightlife and mood-led private experiences.</p>
+          <div class="hero-actions"><button class="primary" data-play>Press Play</button><a class="secondary" href="#experiences">Explore Side B</a><a class="secondary" href="#builders">Build Your Experience</a></div>
+          <div class="now-playing" id="now-playing">Paused · Side A loaded</div>
         </div>
-        <div class="status-pill" id="mode-pill">Ready</div>
+        <div class="player-scene reveal" aria-label="Animated 3D cassette player prototype">
+          <div class="glow"></div>
+          <div class="cassette-player">
+            <div class="deck-top"><span>CHAI SHAI</span><strong>SIDE B</strong></div>
+            <div class="cassette" id="cassette">
+              <div class="cassette-label">AFTERHOURS MASALA</div>
+              <div class="reel reel-left"><i></i></div><div class="reel reel-right"><i></i></div>
+              <div class="tape-window"><span></span></div>
+            </div>
+            <div class="controls"><button data-play aria-label="Play cassette">▶</button><button data-side>Side A/B</button><button data-stop>Stop</button></div>
+          </div>
+        </div>
       </section>
 
-      <section class="panel upload-panel">
-        <form id="upload-form">
-          <label>
-            Meeting title
-            <input id="title" placeholder="Weekly client check-in" />
-          </label>
-          <label class="drop-zone">
-            <span>Audio recording</span>
-            <strong id="file-name">Choose MP3, WAV, M4A, WebM, or MP4 audio</strong>
-            <input id="audio" type="file" accept="audio/*,.mp3,.wav,.m4a,.mp4,.webm,.mpeg,.mpga" />
-          </label>
-          <button id="submit-button" disabled type="submit">Transcribe and summarize</button>
-          <p class="status-text" id="status-text">Upload a call recording to generate notes.</p>
-          <p class="error-text" id="error-text"></p>
-        </form>
+      <section class="section story" id="story">
+        <p class="eyebrow">Side A — The Story</p><h2>From chai counter to cultural signal.</h2>
+        <div class="timeline">
+          <article><span>01</span><h3>Memory</h3><p>Old venue textures, family recipes, cassette labels and film grain introduce where Chai Shai began.</p></article>
+          <article><span>02</span><h3>Migration</h3><p>The brand travels into pop-ups, lounges and venue takeovers with an atmosphere-first service style.</p></article>
+          <article><span>03</span><h3>Side B</h3><p>The after-dark chapter blends chai, cocktails, listening rooms, shisha, artists and intimate hospitality.</p></article>
+        </div>
       </section>
 
-      <section class="results-grid hidden" id="results"></section>
+      <section class="section" id="experiences">
+        <p class="eyebrow">Side B — Experiences</p><h2>Event cards that open like album covers.</h2>
+        <div class="card-grid" id="experience-grid"></div>
+      </section>
+
+      <section class="section events" id="events">
+        <div><p class="eyebrow">Public Events Hub</p><h2>Now playing: public nights.</h2><p>Placeholder event cards for ticketing links, artist lineups and archived moments.</p></div>
+        <div class="event-stack">
+          <article><time>18 Jul</time><strong>Bollywood Jazz Nights</strong><span>Secret lounge · Tickets soon</span></article>
+          <article><time>02 Aug</time><strong>Qawwali & Cocktails</strong><span>Warehouse takeover · RSVP open</span></article>
+          <article><time>16 Aug</time><strong>Chai & Vinyl Sessions</strong><span>Listening bar · Limited seats</span></article>
+        </div>
+      </section>
+
+      <section class="section builders" id="builders">
+        <article class="builder"><p class="eyebrow">Build Your Own Chai</p><h2 id="chai-name">Midnight Masala</h2><div class="choice-row" data-builder="chai"></div><p id="chai-output">Strong black tea, ginger heat, low sweetness, oat milk and cinematic afterhours mood.</p></article>
+        <article class="builder"><p class="eyebrow">Experience Builder</p><h2 id="experience-name">Your Side B Concept</h2><div class="choice-row" data-builder="experience"></div><p id="experience-output">An intimate 75-guest listening bar with chai service, mocktails, vinyl selectors and amber lounge lighting.</p></article>
+      </section>
+
+      <section class="section lookbook"><p class="eyebrow">Gallery / Lookbook</p><h2>Placeholder visuals for smoke, spice, sound and glow.</h2><div class="lookbook-grid"><span></span><span></span><span></span><span></span><span></span></div></section>
+
+      <section class="section inquiry" id="inquiry">
+        <div><p class="eyebrow">Inquiry</p><h2>Tell us what kind of night you are trying to create.</h2><p>Prototype-only form UI ready to connect to email, WhatsApp, CRM, Google Sheets or Typeform.</p></div>
+        <form><input placeholder="Your name" /><input placeholder="Email or WhatsApp" /><textarea placeholder="What should guests remember? Intimate, nostalgic, energetic, soulful or cinematic?"></textarea><button class="primary" type="button">Send inquiry</button></form>
+      </section>
     </main>
     <script type="module" src="/src/app.js"></script>
   </body>
